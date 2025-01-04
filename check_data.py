@@ -6,7 +6,6 @@ import pandas as pd
 import logging
 from tqdm import tqdm
 
-# 设置日志记录
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -21,15 +20,12 @@ logger = logging.getLogger(__name__)
 def main():
     root_dir = "/home/csd440/slurm_test/data/participants_data" 
 
-    # 扫描该目录下的所有文件
     all_files = os.listdir(root_dir)
     logger.info(f"Found {len(all_files)} files in {root_dir}")
 
-    # 先按照命名找出 participant ID 列表
     pattern_gaze = re.compile(r"^(Participant\d+)_Gaze\.xlsx$", re.IGNORECASE)
     pattern_pupil = re.compile(r"^(Participant\d+)_Pupil\.xlsx$", re.IGNORECASE)
 
-    # 结果汇总
     participant_dict = {}
 
     for f in all_files:
@@ -49,12 +45,10 @@ def main():
 
     logger.info(f"Identified {len(participant_dict)} participants.")
 
-    # 遍历 participant_dict，依次读取 Gaze 和 Pupil 文件
     for pid, file_info in tqdm(participant_dict.items(), desc="Processing Participants"):
         gaze_file = file_info.get("gaze", None)
         pupil_file = file_info.get("pupil", None)
 
-        # 处理 Gaze
         if gaze_file:
             gaze_path = os.path.join(root_dir, gaze_file)
             try:
@@ -64,7 +58,6 @@ def main():
             except Exception as e:
                 logger.error(f"Failed to read Gaze file {gaze_path}: {e}")
 
-        # 处理 Pupil
         if pupil_file:
             pupil_path = os.path.join(root_dir, pupil_file)
             try:
